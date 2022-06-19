@@ -8,7 +8,7 @@ with customers as (
     select * from {{ ref('stg_coffee_shop__orders') }}
 )
 
-customer_orders as (
+, customer_orders as (
     select
           customer_id
         , count(*) as n_orders
