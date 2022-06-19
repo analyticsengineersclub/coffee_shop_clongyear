@@ -1,0 +1,8 @@
+version: 2
+
+models: 
+  - name: customers
+  - name: order_items
+  - name: orders
+  - name: product_prices
+  - name: products

@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: coffee_shop
+    description: Sample coffee_shop data in the analytics-engineers-club project
+    database: analytics-engineers-club
+    schema: coffee_shop
+    tables:
+      - name: customers
+      - name: order_items
+      - name: orders
+      - name: product_prices
+      - name: products
