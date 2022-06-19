@@ -1,8 +1,8 @@
 version: 2
 
 models: 
-  - name: customers
-  - name: order_items
-  - name: orders
-  - name: product_prices
-  - name: products
+  - name: stg_coffee_shop__customers
+  - name: stg_coffee_shop__order_items
+  - name: stg_coffee_shop__orders
+  - name: stg_coffee_shop__product_prices
+  - name: stg_coffee_shop__products
