@@ -9,7 +9,7 @@ with pageviews as (
 , event_lags as (
   select
       pageviews.*
-    , lag(timestamp, 1) over (partition by visitor_id order by timestamp) as last_event
+    , lag(timestamp, 1) over (partition by visitor_id order by timestamp, page) as last_event
   from pageviews
 )
 
@@ -25,7 +25,7 @@ with pageviews as (
       time_deltas.*
     , case
         when last_event is null then 1
-        when delta_seconds <= 60*30 then 1
+        when delta_seconds >= 60*30 then 1
         else 0
         end as new_session_flag
   from time_deltas
@@ -55,7 +55,7 @@ with pageviews as (
     , page
     , timestamp
   from assign_session_ids
-  order by visitor_id, timestamp
+  order by visitor_id, timestamp, page
 )
 
 select * from final
