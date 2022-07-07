@@ -1,5 +1,5 @@
 with pageviews as (
-    select * from {{ source('web_events', 'pageviews') }}
+    select * from {{ source('web_tracking', 'pageviews') }}
 )
 
 select 
