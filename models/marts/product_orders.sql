@@ -20,6 +20,7 @@ with order_prices as (
     from order_prices
     left join products
       on order_prices.product_id = products.product_id
+    order by created_at, order_id, orderitem_id
 )
 
 select * from final

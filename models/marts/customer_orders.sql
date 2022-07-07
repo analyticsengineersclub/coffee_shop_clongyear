@@ -37,6 +37,7 @@ with product_orders as (
       , date_trunc(created_at, year) as order_year
       , date_diff(created_at, first_order_at, day) as days_since_first_order
     from product_orders_join_customers
+    order by created_at, order_id, orderitem_id
 )
 
 select * from final
