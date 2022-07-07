@@ -32,6 +32,7 @@ with customers as (
     from customers
     left join  customer_order_history
       on  customers.customer_id = customer_order_history.customer_id
+    order by first_order_at, customer_id
 )
 
 select * from final

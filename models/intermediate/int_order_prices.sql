@@ -20,6 +20,7 @@ with orders as (
 , final as (
     select
         orders.*
+      , order_items.orderitem_id
       , order_items.product_id
       , product_prices.price
     from orders
