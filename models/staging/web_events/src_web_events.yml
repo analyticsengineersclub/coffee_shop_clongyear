@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: web_tracking
+    description: Sample web event data in the analytics-engineers-club
+    database: analytics-engineers-club
+    schema: web_tracking
+    tables:
+      - name: pageviews
