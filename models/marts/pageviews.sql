@@ -2,60 +2,60 @@
 
 with pageviews as (
 
-    select * from {{ ref('stg_web_tracking__pageviews') }}
+    select * from {{ ref('int_stitched_pageviews') }}
 
 )
 
-, known_customer_pageviews as (
-    select
-        customer_id
-      , visitor_id
-      , timestamp
-      , row_number() over (partition by customer_id order by timestamp, visitor_id) as pageview_rank
-    from pageviews
-    where customer_id is not null
+, event_lags as (
+  select
+      pageviews.*
+    , lag(timestamp, 1) over (partition by visitor_id order by timestamp) as last_event
+  from pageviews
 )
 
-, first_customer_visitor_ids as (
-    select
-        customer_id
-      , visitor_id
-    from known_customer_pageviews
-    where pageview_rank = 1
+, time_deltas as (
+  select
+      event_lags.*
+    , timestamp_diff(timestamp, last_event, second) as delta_seconds
+  from event_lags
 )
 
-, distinct_customer_visitors as (
-    select distinct customer_id, visitor_id
-    from known_customer_pageviews
+, session_flags as (
+  select
+      time_deltas.*
+    , case
+        when last_event is null then 1
+        when delta_seconds <= 60*30 then 1
+        else 0
+        end as new_session_flag
+  from time_deltas
 )
 
-, customer_id_backfill as (
-    select
-        pageviews.*
-      , coalesce(pageviews.customer_id, distinct_customer_visitors.customer_id) as cid_clean
-    from pageviews
-    left join distinct_customer_visitors
-      on pageviews.visitor_id = distinct_customer_visitors.visitor_id
+, sum_session_flags as (
+  select
+      session_flags.*
+    , sum(new_session_flag) over (partition by visitor_id order by timestamp) as visitor_session
+  from session_flags
 )
 
-, visitor_id_backfill as (
-    select
-        customer_id_backfill.*
-      , coalesce(first_customer_visitor_ids.visitor_id, customer_id_backfill.visitor_id) as vid_clean
-    from customer_id_backfill
-    left join first_customer_visitor_ids
-      on customer_id_backfill.cid_clean = first_customer_visitor_ids.customer_id
+, assign_session_ids as (
+  select
+    sum_session_flags.*
+  , {{ dbt_utils.surrogate_key(['visitor_id', 'visitor_session']) }} as session_id
+  from sum_session_flags
 )
 
 , final as (
-    select
-        pageview_id
-      , vid_clean as visitor_id
-      , cid_clean as customer_id
-      , device_type
-      , page
-      , timestamp
-    from visitor_id_backfill
+  select
+      pageview_id
+    , visitor_id
+    , customer_id
+    , session_id
+    , device_type
+    , page
+    , timestamp
+  from assign_session_ids
+  order by visitor_id, timestamp
 )
 
 select * from final
