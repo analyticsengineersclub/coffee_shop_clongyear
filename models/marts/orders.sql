@@ -37,8 +37,7 @@ with order_prices as (
       on order_prices.order_id = orders.order_id
     left join products
       on order_prices.product_id = products.product_id
-
-    order by created_at, order_id, product_category, product_name
 )
 
 select * from final
+order by created_at, order_id, product_category, product_name
