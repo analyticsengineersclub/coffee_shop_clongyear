@@ -4,10 +4,10 @@ with orders as (
 
 select
     id as order_id
-  , created_at
   , customer_id
-  , total
   , address
   , state
   , zip
+  , total
+  , created_at
 from orders
