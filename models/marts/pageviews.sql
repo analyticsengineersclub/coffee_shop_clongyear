@@ -55,7 +55,7 @@ with pageviews as (
     , page
     , timestamp
   from assign_session_ids
-  order by visitor_id, timestamp, page
 )
 
 select * from final
+order by visitor_id, timestamp, page
