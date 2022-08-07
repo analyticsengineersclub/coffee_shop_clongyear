@@ -7,7 +7,52 @@ sources:
     schema: coffee_shop
     tables:
       - name: customers
+        columns: 
+          - name: id
+            tests:
+              - unique
+              - not_null
       - name: order_items
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: order_id
+            tests:
+              - relationships:
+                  to: source('coffee_shop', 'orders')
+                  field: id
+          - name: product_id
+            tests:
+              - relationships:
+                  to: source('coffee_shop', 'products')
+                  field: id
       - name: orders
+        columns: 
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            tests:
+              - relationships:
+                  to: source('coffee_shop', 'customers')
+                  field: id
       - name: product_prices
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: product_id
+            tests:
+              - relationships:
+                  to: source('coffee_shop', 'products')
+                  field: id
       - name: products
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
