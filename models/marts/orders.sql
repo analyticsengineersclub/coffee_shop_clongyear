@@ -1,16 +1,16 @@
 {{ config(materialized='table') }}
 
-with orders as (
-
-    select * from {{ ref('stg_coffee_shop__orders') }}
-
-) 
-
-, order_prices as (
+with order_prices as (
 
     select * from {{ ref('int_order_prices') }}
 
 )
+
+, orders as (
+
+    select * from {{ ref('stg_coffee_shop__orders') }}
+
+) 
 
 , products as (
 
