@@ -5,7 +5,7 @@ with product_prices as (
 select
     id as price_id
   , product_id
-  , price
   , created_at
   , ended_at
+  , price
 from product_prices
