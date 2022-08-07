@@ -7,3 +7,13 @@ sources:
     schema: web_tracking
     tables:
       - name: pageviews
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            tests:
+              - relationships:
+                  to: source('coffee_shop', 'customers')
+                  field: id
